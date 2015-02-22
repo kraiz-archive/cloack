@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="clock" width="100%" height="100%">
+    Yo man, get a modern browser!
+</canvas>
+
+<script>
+    document.addEventListener('DOMContentLoaded', drawClock);
+    function drawClock(_, time) {
+        time = time || new Date();
+        var hour = time.getHours() % 12;
+        var minute = time.getMinutes();
+
+        // --- Analog clock ---//
+        var canvas = document.querySelector("#clock");
+        var context = canvas.getContext("2d");
+        context.canvas.width = window.innerWidth;
+        context.canvas.height = window.innerHeight;
+
+        // Make sure the clock is centered in the canvas
+        var radius = Math.min(canvas.width, canvas.height) / 2;
+        var clockX = canvas.width / 2;
+        var clockY = canvas.height / 2;
+
+        // convert to degree
+        var hourDegree = 30 * hour + 270;
+        var minuteDegree = 6 * minute + 270;
+
+        // convert to radians
+        var hourRadian = ( Math.PI / 180 ) * hourDegree;
+        var minuteRadian = ( Math.PI / 180 ) * minuteDegree;
+
+        // clear canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // draw it
+        context.beginPath();
+        context.arc(clockX, clockY, radius, hourRadian, minuteRadian, true);
+        context.lineTo(clockX, clockY);
+        context.closePath();
+        context.fillStyle = 'black';
+        context.fill();
+
+        // debug mode: spin it fast
+        if (window.location.hash == '#debug') {
+            time.setMinutes(time.getMinutes() + 1);
+            window.setTimeout(function () {
+                drawClock(null, time);
+            }, 100);
+        }
+    }
+</script>
+
+</body>
+</html>
